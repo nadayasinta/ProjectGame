@@ -1,6 +1,9 @@
+var myObstacle;
+
+
 function startGame() {
     var randTemp = Math.floor(Math.random()*3)
-    var randTemp = 1
+    // var randTemp = 1
     switch(randTemp){
         case 0:
             var myObs1  = [
@@ -46,7 +49,7 @@ function startGame() {
             break;    
         }
         
-    var myObstacle  = new obstacle(50, 50, "./img/stone.png", myObs1)          
+    myObstacle  = new obstacle(50, 50, "./img/stone.png", myObs1)          
                  
     myGameArea.start();
 }
