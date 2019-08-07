@@ -1,4 +1,6 @@
 canvas {
-    border:1px solid #905D43;
-    background-color: #F5A373;
+    border:5px solid #0a1f40;
+    /* background-color: #F5A373; */
+    margin: auto;
+    background-image: url("img/background2.png")
 }
