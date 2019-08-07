@@ -1,9 +1,10 @@
 let playerOne;
 let playerTwo;
+var bullets = []
 
 function startGame() {
-    playerOne = new component(30, 30, "red", 225, 225);
-    playerTwo = new component(30, 30, "blue", 200, 225);
+    playerOne = new component(30, 30, "red", 240, 220);
+    playerTwo = new component(30, 30, "blue", 240, 20);
     myGameArea.start();
 }
 
@@ -47,12 +48,25 @@ function component(width, height, color, x, y, type) {
     this.x = x;
     this.y = y;    
     this.update = function() {
-        ctx = myGameArea.context;
-        ctx.save();
-        ctx.translate(this.x, this.y);
-        ctx.rotate(this.angle);
-        ctx.fillStyle = color;
-        ctx.fillRect(this.width / -2, this.height / -2, this.width, this.height);
+        
+        if (type == "image") {
+            ctx = myGameArea.context;
+            ctx.save();
+            ctx.drawImage(this.image, 
+                this.x, 
+                this.y,
+                this.width, this.height);
+                ctx.rotate(this.angle);
+                ctx.translate(this.x, this.y);
+        } else {
+            ctx = myGameArea.context;
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.angle);
+            ctx.fillStyle = color;
+            ctx.fillRect(this.width / -2, this.height / -2, this.width, this.height);
+        }
+        
         ctx.restore();    
     }
     this.newPos = function() {
@@ -62,22 +76,55 @@ function component(width, height, color, x, y, type) {
     }
 }
 
+class Bullet {
+    constructor(x, y, xv, sudut) {
+      this.x = x
+      this.y = y
+      this.xv = xv
+      this.sudut = sudut
+      this.size = 3
+      this.timer = 0
+    }
+    move() {
+      this.x += this.xv * Math.sin(this.sudut)
+      this.y -= this.xv * Math.cos(this.sudut)
+      this.timer++
+    }
+    draw() {
+      ctx.fillStyle = "green";
+      ctx.fillRect(this.x, this.y, 3, 3);
+    }
+    delete() {
+      if (this.timer == 50) {
+        bullets.splice(bullets.indexOf(this), 1);
+      }
+    }
+  }
+
 function updateGameArea() {
     myGameArea.clear();
     playerOne.moveAngle = 0;
     playerTwo.moveAngle = 0;
     playerOne.speed = 0;
     playerTwo.speed = 0;
-    if (myGameArea.keys && myGameArea.keys[38]) {playerOne.speed= 1; } // atas
-    if (myGameArea.keys && myGameArea.keys[37]) {playerOne.moveAngle = -1; } // kiri
-    if (myGameArea.keys && myGameArea.keys[39]) {playerOne.moveAngle = 1; } // kanan
-    if (myGameArea.keys && myGameArea.keys[40]) {playerOne.speed= -1; } // bawah
-    if (myGameArea.keys && myGameArea.keys[87]) {playerTwo.speed= 1; } // atas
-    if (myGameArea.keys && myGameArea.keys[65]) {playerTwo.moveAngle = -1; } // kiri
-    if (myGameArea.keys && myGameArea.keys[68]) {playerTwo.moveAngle = 1; } // kanan
-    if (myGameArea.keys && myGameArea.keys[83]) {playerTwo.speed= -1; } // bawah
+    if (myGameArea.keys && myGameArea.keys[38]) {playerOne.speed= 5; } // atas
+    if (myGameArea.keys && myGameArea.keys[37]) {playerOne.moveAngle = -5; } // kiri
+    if (myGameArea.keys && myGameArea.keys[39]) {playerOne.moveAngle = 5; } // kanan
+    if (myGameArea.keys && myGameArea.keys[40]) {playerOne.speed= -5; } // bawah
+    if (myGameArea.keys && myGameArea.keys[83]) {playerTwo.speed= 5; } // atas
+    if (myGameArea.keys && myGameArea.keys[65]) {playerTwo.moveAngle = -5; } // kiri
+    if (myGameArea.keys && myGameArea.keys[68]) {playerTwo.moveAngle = 5; } // kanan
+    if (myGameArea.keys && myGameArea.keys[87]) {playerTwo.speed= -5; } // bawah
     playerOne.newPos();
     playerTwo.newPos();
+    if (myGameArea.keys && myGameArea.keys[32]) {bullets.push(new Bullet(playerOne.x, playerOne.y, 5, playerOne.angle))} // bawah
+    if (myGameArea.keys && myGameArea.keys[9]) {bullets.push(new Bullet(playerTwo.x, playerTwo.y, -5, playerTwo.angle))} // bawah
+    for (b of bullets) {
+        b.move()
+        b.draw()
+        b.delete()
+      }
     playerOne.update();
     playerTwo.update();
+    
 }
