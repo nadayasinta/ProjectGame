@@ -73,7 +73,6 @@ function obsArray(myObs){
     }
     return obsArr
 }
-console.log(obsArr)
 
 
 function startGame() {
@@ -87,7 +86,6 @@ function startGame() {
     myObstacle  = new obstacle(50, 50, "./img/batu.png", myObs)   
     myGameArea.start();
 }
-// console.log(myObs)
 
 let myGameArea = {
     canvas : document.createElement("canvas"),
@@ -251,7 +249,16 @@ function sound(src) {
 
 
 function updateGameArea() {
-    myGameArea.clear();
+    if (scoreOne.nilai <= 0){
+        myGameArea.stop();
+        return alert('Player 2 Menang!')
+    }
+    if(scoreTwo.nilai <= 0){
+        myGameArea.stop();
+        return alert('Player 1 Menang!');
+    }
+    myGameArea.clear()
+    
     playerOne.moveAngle = 0;
     playerTwo.moveAngle = 0;
     playerOne.speed = 0;
@@ -291,13 +298,33 @@ function updateGameArea() {
     }
     // Handling nabrak obstacle
     for (let i in obsArr){
-        if (playerOne.x >= obsArr[i][0]-25 - playerOne.width/2 && playerOne.y >= obsArr[i][1]-25 - playerOne.height/2 && playerOne.x <= obsArr[i][0]+25 - playerOne.width/2 && playerOne.y <= obsArr[i][1]+25 - playerOne.height/2 ){
-            playerOne.x = obsArr[i][0]- 6 - playerOne.width
-            playerOne.y = obsArr[i][1]- 6 - playerOne.width 
+        if (playerOne.x >= obsArr[i][0]-25 - playerOne.width/2 && playerOne.y >= obsArr[i][1]-25 - playerOne.height/2 && playerOne.x <= obsArr[i][0]+25 + playerOne.width/2 && playerOne.y <= obsArr[i][1]+25 + playerOne.height/2 ){
+            if(playerOne.x >= obsArr[i][0]-25 - playerOne.width/2 && playerOne.y >= obsArr[i][1]-25 - playerOne.height/2 && playerOne.y <= obsArr[i][1]+25 + playerOne.height/2) { 
+                playerOne.x = obsArr[i][0]-25 - playerOne.width 
+            } // tabrak dari kiri
+            else if (playerOne.y >= obsArr[i][1]-25 - playerOne.height/2 && playerOne.x <= obsArr[i][0]+25 + playerOne.width/2 && playerOne.y <= obsArr[i][1]+25 + playerOne.height/2 ){
+                playerOne.x = obsArr[i][0]+25 + playerOne.width
+            } // tabrak dari kanan
+            else if (playerOne.x >= obsArr[i][0]-25 - playerOne.width/2 && playerOne.y >= obsArr[i][1]-25 - playerOne.height/2 && playerOne.x <= obsArr[i][0]+25 + playerOne.width/2 ){
+                playerOne.y = obsArr[i][1]-25 - playerOne.height
+            } // tabrak dari atas
+            else if (playerOne.x >= obsArr[i][0]-25 - playerOne.width/2 && playerOne.x <= obsArr[i][0]+25 + playerOne.width/2 && playerOne.y <= obsArr[i][1]+25 + playerOne.height/2 ){
+                playerOne.y = obsArr[i][1]+25 + playerOne.height
+            } // tabrak dari bawah
         }
-        if (playerTwo.x >= obsArr[i][0]-25 - playerTwo.width/2 && playerTwo.y >= obsArr[i][1]-25 - playerTwo.height/2 && playerTwo.x <= obsArr[i][0]+25 - playerTwo.width/2 && playerTwo.y <= obsArr[i][1]+25 - playerTwo.height/2 ){
-            playerTwo.x = obsArr[i][0]- 6 - playerTwo.width
-            playerTwo.y = obsArr[i][1]- 6 - playerTwo.width 
+        if (playerTwo.x >= obsArr[i][0]-25 - playerTwo.width/2 && playerTwo.y >= obsArr[i][1]-25 - playerTwo.height/2 && playerTwo.x <= obsArr[i][0]+25 + playerTwo.width/2 && playerTwo.y <= obsArr[i][1]+25 + playerTwo.height/2 ){
+            if(playerTwo.x >= obsArr[i][0]-25 - playerTwo.width/2 && playerTwo.y >= obsArr[i][1]-25 - playerTwo.height/2 && playerTwo.y <= obsArr[i][1]+25 + playerTwo.height/2) { 
+                playerTwo.x = obsArr[i][0]-25 - playerTwo.width 
+            } // tabrak dari kiri
+            else if (playerTwo.y >= obsArr[i][1]-25 - playerTwo.height/2 && playerTwo.x <= obsArr[i][0]+25 + playerTwo.width/2 && playerTwo.y <= obsArr[i][1]+25 + playerTwo.height/2 ){
+                playerTwo.x = obsArr[i][0]+25 + playerTwo.width
+            } // tabrak dari kanan
+            else if (playerTwo.x >= obsArr[i][0]-25 - playerTwo.width/2 && playerTwo.y >= obsArr[i][1]-25 - playerTwo.height/2 && playerTwo.x <= obsArr[i][0]+25 + playerTwo.width/2 ){
+                playerTwo.y = obsArr[i][1]-25 - playerTwo.height
+            } // tabrak dari atas
+            else if (playerTwo.x >= obsArr[i][0]-25 - playerTwo.width/2 && playerTwo.x <= obsArr[i][0]+25 + playerTwo.width/2 && playerTwo.y <= obsArr[i][1]+25 + playerTwo.height/2 ){
+                playerTwo.y = obsArr[i][1]+25 + playerTwo.height
+            } // tabrak dari bawah
         }
     }
     // Handling nabrak lawan
@@ -335,16 +362,15 @@ function updateGameArea() {
         b.move()
         b.draw()
         b.delete()
-        console.log(bullets)
     }
 
     scoreOne.text = "Score Player 1: " + scoreOne.nilai;
     scoreTwo.text = "Score Player 2: " + scoreTwo.nilai;
     scoreOne.update();
     scoreTwo.update();
-
     myObstacle.update();
     playerOne.update();
     playerTwo.update();
-    
+
+
 }
