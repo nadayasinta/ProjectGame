@@ -84,7 +84,7 @@ function startGame() {
     playerOne = new component(30, 30, "#C4ADB5", 1240, 580);
     playerTwo = new component(30, 30, "#9EB3E8", 40, 60); 
     scoreOne = new score(100, 300, 'white', 20, 30)
-    scoreTwo = new score(100, 300, 'white', 858, 30)
+    scoreTwo = new score(100, 300, 'white', 1085, 30)
     myObstacle  = new obstacle(50, 50, "./img/batu.png", myObs)   
     myGameArea.start();
 }
@@ -253,10 +253,12 @@ function sound(src) {
 
 function updateGameArea() {
     if (scoreOne.nilai <= 0){
+        // myMusic.stop();
         myGameArea.stop();
         return alert('Player 2 Menang!')
     }
     if(scoreTwo.nilai <= 0){
+        // myMusic.stop();
         myGameArea.stop();
         return alert('Player 1 Menang!');
     }
