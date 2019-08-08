@@ -69,7 +69,7 @@
     drawBall(x, y, "#0095DD");
     drawBall(a, b, 'black');
     // Untuk membuat bola bergerak dan menghandle agar bola tidak keluar batas canvas
-    if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
+    if(x + dx < ballRadius || x + dx > canvas.width-ballRadius) {
         dx = -dx;
     }
     if(y + dy < ballRadius) {

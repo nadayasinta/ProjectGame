@@ -1,13 +1,14 @@
+// Variable yang dibutuhkan
 let playerOne;
 let playerTwo;
 var bullets = [];
 var myObstacle;
-let scoreOne;
-let scoreTwo;
+let healthOne;
+let healthTwo;
 var myMusic;
 
 
-
+// Fungsi untuk merandom obstacle di map
 function randomObs(){
     var randTemp = Math.floor(Math.random()*3)
     switch(randTemp){
@@ -60,9 +61,13 @@ function randomObs(){
         }
 }
 
+// Variable yang berisi maps dengan obstacle
 var myObs = new randomObs()
+
+// Variable yang berisi koordinat obstacle
 var obsArr = obsArray(myObs);
 
+// Fungsi untuk membuat array yang berisi koordinat obstacle
 function obsArray(myObs){
     const obsArr=[]
     for (i=0;i<myObs.length;i++){
@@ -75,20 +80,21 @@ function obsArray(myObs){
     return obsArr
 }
 
-
+// Fungsi untuk memulai game
 function startGame() {
     document.getElementById("home-page").remove();
     myMusic = new sound("./img/music.mp3");
     myMusic.play();
-    // playerOne = new component(30, 30, "./img/stone.png", 1010, 490,"image");
-    playerOne = new component(30, 30, "#C4ADB5", 1240, 580);
-    playerTwo = new component(30, 30, "#9EB3E8", 40, 60); 
-    scoreOne = new score(100, 300, 'white', 20, 30)
-    scoreTwo = new score(100, 300, 'white', 1085, 30)
+    // playerOne = new player(30, 30, "./img/stone.png", 1010, 490,"image");
+    playerOne = new player(30, 30, "red", 1240, 580);
+    playerTwo = new player(30, 30, "blue", 40, 60); 
+    healthOne = new health(100, 300, 'white', 20, 30)
+    healthTwo = new health(100, 300, 'white', 1079, 30)
     myObstacle  = new obstacle(50, 50, "./img/batu.png", myObs)   
     myGameArea.start();
 }
 
+// Game Area
 let myGameArea = {
     canvas : document.createElement("canvas"),
     start : function() {
@@ -116,6 +122,7 @@ let myGameArea = {
     }
 }
 
+// Fungsi untuk membuat obstacle
 function obstacle(width, height, img, x) {
     this.image = new Image();
     this.image.src = img;
@@ -136,8 +143,9 @@ function obstacle(width, height, img, x) {
         }
     }
 }
-// var count =0
-function component(width, height, color, x, y, type) {
+
+// Fungsi untuk membuat player
+function player(width, height, color, x, y, type) {
     this.type = type;
     if (type == "image") {
         this.image = new Image();
@@ -194,7 +202,8 @@ function component(width, height, color, x, y, type) {
     }
 }
 
-function score(width, height, color, x, y) {
+// Fungsi untuk memunculkan keterangan health player
+function health(width, height, color, x, y) {
     this.width = width;
     this.height = height;
     this.x = x;
@@ -208,6 +217,7 @@ function score(width, height, color, x, y) {
     }
   }
 
+  // Kelas untuk membuat objek peluru
 class Bullet {
     constructor(x, y, xv, sudut) {
         this.xv = xv
@@ -235,6 +245,7 @@ class Bullet {
     }
 }
 
+// Fungsi untuk membuat sound
 function sound(src) {
     this.sound = document.createElement("audio");
     this.sound.src = src;
@@ -250,14 +261,14 @@ function sound(src) {
     }
 } 
 
-
+// Fungsi untuk mengupdate game arena
 function updateGameArea() {
-    if (scoreOne.nilai <= 0){
+    if (healthOne.nilai <= 0){
         // myMusic.stop();
         myGameArea.stop();
         return alert('Player 2 Menang!')
     }
-    if(scoreTwo.nilai <= 0){
+    if(healthTwo.nilai <= 0){
         // myMusic.stop();
         myGameArea.stop();
         return alert('Player 1 Menang!');
@@ -268,6 +279,8 @@ function updateGameArea() {
     playerTwo.moveAngle = 0;
     playerOne.speed = 0;
     playerTwo.speed = 0;
+
+    // Kontrol pemain
     if (myGameArea.keys && myGameArea.keys[38]) {playerOne.speed= 5; } // atas
     if (myGameArea.keys && myGameArea.keys[37]) {playerOne.moveAngle = -5; } // kiri
     if (myGameArea.keys && myGameArea.keys[39]) {playerOne.moveAngle = 5; } // kanan
@@ -276,6 +289,7 @@ function updateGameArea() {
     if (myGameArea.keys && myGameArea.keys[65]) {playerTwo.moveAngle = -5; } // kiri
     if (myGameArea.keys && myGameArea.keys[68]) {playerTwo.moveAngle = 5; } // kanan
     if (myGameArea.keys && myGameArea.keys[87]) {playerTwo.speed= -5; } // bawah
+
     // Handling nabrak tembok
     if (playerOne.x < playerOne.width/2){
         playerOne.x = playerOne.width;
@@ -301,6 +315,7 @@ function updateGameArea() {
     if (playerTwo.y > myGameArea.canvas.height - playerTwo.height/2){
         playerTwo.y = myGameArea.canvas.height - playerTwo.height;
     }
+
     // Handling nabrak obstacle
     for (let i in obsArr){
         if (playerOne.x >= obsArr[i][0]-25 - playerOne.width/2 && playerOne.y >= obsArr[i][1]-25 - playerOne.height/2 && playerOne.x <= obsArr[i][0]+25 + playerOne.width/2 && playerOne.y <= obsArr[i][1]+25 + playerOne.height/2 ){
@@ -332,6 +347,7 @@ function updateGameArea() {
             } // tabrak dari bawah
         }
     }
+
     // Handling nabrak lawan
     if (playerOne.x >= playerTwo.x-playerTwo.width/2 - playerOne.width/2 && playerOne.y >= playerTwo.y-playerTwo.height/2 - playerOne.height/2 && playerOne.x <= playerTwo.x+playerTwo.width/2 - playerOne.width/2 && playerOne.y <= playerTwo.y+playerTwo.height/2 - playerOne.height/2 ){
         playerOne.x = playerTwo.x-playerTwo.width/2 - playerOne.width
@@ -346,22 +362,25 @@ function updateGameArea() {
     for (let i in bullets){
         if (bullets[i].x > playerOne.x-playerOne.width/2 && bullets[i].y > playerOne.y-playerOne.height/2 && bullets[i].y < playerOne.y+playerOne.height/2 && bullets[i].x < playerOne.x+playerOne.width/2) {
             bullets.splice(i,1);
-            scoreOne.nilai -= 1;
-            scoreOne.update();
+            healthOne.nilai -= 1;
+            healthOne.update();
         }
     }
     for (let i in bullets){
         if (bullets[i].x > playerTwo.x-playerTwo.width/2 && bullets[i].y > playerTwo.y-playerTwo.height/2 && bullets[i].y < playerTwo.y+playerTwo.height/2 && bullets[i].x < playerTwo.x+playerTwo.width/2) {
             bullets.splice(i,1);
-            scoreTwo.nilai -= 1;
-            scoreTwo.update();
+            healthTwo.nilai -= 1;
+            healthTwo.update();
 
         }
     }
 
+    // Untuk save posisi player setelah digerakan
     playerOne.newPos();
     playerTwo.newPos();
-    if (myGameArea.keys && myGameArea.keys[32]) {bullets.push(new Bullet(playerOne.x, playerOne.y, 5, playerOne.angle))} // bawah
+
+    // Untuk menembak dengan menekan tombol keyboard
+    if (myGameArea.keys && myGameArea.keys[77]) {bullets.push(new Bullet(playerOne.x, playerOne.y, 5, playerOne.angle))} // bawah
     if (myGameArea.keys && myGameArea.keys[9]) {bullets.push(new Bullet(playerTwo.x, playerTwo.y, -5, playerTwo.angle))} // bawah
     for (b of bullets) {
         b.move()
@@ -369,11 +388,16 @@ function updateGameArea() {
         b.delete()
     }
 
-    scoreOne.text = "Score Player 1: " + scoreOne.nilai;
-    scoreTwo.text = "Score Player 2: " + scoreTwo.nilai;
-    scoreOne.update();
-    scoreTwo.update();
+    // Untuk memunculkan teks info health player
+    healthOne.text = "Health Player 1: " + healthOne.nilai;
+    healthTwo.text = "Health Player 2: " + healthTwo.nilai;
+    healthOne.update();
+    healthTwo.update();
+
+    // Untuk mengupdate obstacle
     myObstacle.update();
+
+    // Untuk mengupdate player
     playerOne.update();
     playerTwo.update();
 
@@ -381,11 +405,13 @@ function updateGameArea() {
     
 }
 
+// Fungsi untuk halaman depan
 function homePage() {
     myMusic = new sound("./sound/music.mp3");
     myMusic.play();
 }
 
+// Fungsi untuk menjalankan suara
 function sound(src) {
     this.sound = document.createElement("audio");
     this.sound.src = src;
